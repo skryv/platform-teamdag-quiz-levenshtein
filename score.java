@@ -11,11 +11,13 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
+//SOURCES DamerauLevenshtein.java
 
 @Command(name="score")
 public class score implements Callable<Integer> {
 
     enum QuestionType {worldometer, historypics}
+    DamerauLevenshtein dl = new DamerauLevenshtein();
 
     @Parameters(index="0", description="answer")
     private String answer;
@@ -37,7 +39,11 @@ public class score implements Callable<Integer> {
             case worldometer -> "LEJAFCHGBKDI";
             case historypics -> "LFCKAJGBEHID";
         };
-        System.out.printf("%.2f\n", (1 - l.distance(rightAnswer, answer.toUpperCase()))*maxValue);
+        System.out.printf("Levenshtein: %.2f\n", (1 - l.distance(rightAnswer, answer.toUpperCase()))*maxValue);
+        System.out.printf("Damerau-Levenshtein: %.2f\n",
+                (1-(float)dl.calculateDistance(rightAnswer, answer.toUpperCase())/
+                        java.lang.Math.max(rightAnswer.length(),answer.length()))*maxValue);
+
         return 0;
     }
 
